@@ -190,7 +190,7 @@ Handlebars.registerHelper('table', function(columns, data) {
   table += "</tr></thead><toby>";
   data.forEach(function(d) {
     table += "<tr>";
-    columns.forEach(c => table += `<td>${d[c]}</td>`);
+    columns.forEach(c => table += `<td>${d[c]}${c==='winrate'?'%':''}</td>`);
     table += "</tr>";
   });
   table += "</table>";

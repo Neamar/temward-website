@@ -61,3 +61,7 @@ footer.page-footer {
   line-height: 1em;
   margin: 0;
 }
+
+table th, table td {
+  text-align: center;
+}

@@ -33,6 +33,32 @@ function callAjax(url, callback) {
 
   <link rel="stylesheet" type="text/css" href="/css/achievements.css" media="screen,projection" />
 
+  <script type="text/javascript">
+  (function(e,t){var n=e.amplitude||{_q:[],_iq:{}};var r=t.createElement("script")
+  ;r.type="text/javascript";r.async=true
+  ;r.src="https://cdn.amplitude.com/libs/amplitude-4.0.0-min.gz.js"
+  ;r.onload=function(){if(e.amplitude.runQueuedFunctions){
+  e.amplitude.runQueuedFunctions()}else{
+  console.log("[Amplitude] Error: could not load SDK")}}
+  ;var i=t.getElementsByTagName("script")[0];i.parentNode.insertBefore(r,i)
+  ;function s(e,t){e.prototype[t]=function(){
+  this._q.push([t].concat(Array.prototype.slice.call(arguments,0)));return this}}
+  var o=function(){this._q=[];return this}
+  ;var a=["add","append","clearAll","prepend","set","setOnce","unset"]
+  ;for(var u=0;u<a.length;u++){s(o,a[u])}n.Identify=o;var c=function(){this._q=[]
+  ;return this}
+  ;var l=["setProductId","setQuantity","setPrice","setRevenueType","setEventProperties"]
+  ;for(var p=0;p<l.length;p++){s(c,l[p])}n.Revenue=c
+  ;var d=["init","logEvent","logRevenue","setUserId","setUserProperties","setOptOut","setVersionName","setDomain","setDeviceId","setGlobalUserProperties","identify","clearUserProperties","setGroup","logRevenueV2","regenerateDeviceId","logEventWithTimestamp","logEventWithGroups","setSessionId"]
+  ;function v(e){function t(t){e[t]=function(){
+  e._q.push([t].concat(Array.prototype.slice.call(arguments,0)))}}
+  for(var n=0;n<d.length;n++){t(d[n])}}v(n);n.getInstance=function(e){
+  e=(!e||e.length===0?"$default_instance":e).toLowerCase()
+  ;if(!n._iq.hasOwnProperty(e)){n._iq[e]={_q:[]};v(n._iq[e])}return n._iq[e]}
+  ;e.amplitude=n})(window,document);
+
+   amplitude.getInstance().init("3c8df80a0f79ba7c3a35a873e61bc88b");
+  </script>
 </head>
 <body>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -57,7 +83,7 @@ function callAjax(url, callback) {
       <div class="container">
         <div class="section">
           <div class="row">
-            <div class="col s12 center">
+            <div class="col s12 center" id="loader-wrapper">
               <h3><i class="mdi-content-send brown-text"></i></h3>
               <h4>Please wait, I'm loading your stats...</h4>
               <div style="width:200px; margin: auto">{% include spinner.html %}</div>
@@ -197,7 +223,7 @@ const summoner = urlParams.get('summoner');
 const region = urlParams.get('region');
 
 if(!summoner || !region) {
-  document.getElementById("content").innerHTML = "Invalid URL";
+  document.getElementById("loader-wrapper").innerHTML = "Invalid URL";
 }
 else {
   callAjax(`https://staging.teamward.xyz/achievements?summoner=${summoner}&region=${region}`, function(res) {
@@ -208,6 +234,8 @@ else {
       graphLoader.forEach(f => f());
       $('.parallax').parallax();
     }, 10);
+
+    amplitude.getInstance().logEvent('S7 achievements', {region: region, summoner: summoner, gamesCount: res.totalGames.nb_games});
   });
 }
 

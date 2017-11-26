@@ -8,10 +8,17 @@
         <div class="left-align light">
           {{ graph "percentage" "Games by queue" "queue" "count" "games" queuesRepartition }}
         </div>
+
+        <div class="orange" style="margin: 30px; padding: 20px">
+          <strong>Wait, is that all?</strong><br>
+          <li>If you installed <a href="https://play.google.com/store/apps/details?id=fr.neamar.lolgamedata&hl=en" class="white-text">Teamward</a> before the start of the season, then the stats are exhaustive. GGWP.
+          <li>If you didn't, then you'll only see games where you played with or against a Teamward user (around 75% of the games in EUW)
+        </div>
       </div>
     </div>
   </div>
 </div>
+
 
 {{ parallax_start }}
 You killed a total of {{ number minionsKilled.sum }} minions

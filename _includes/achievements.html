@@ -119,8 +119,7 @@ You had a game where you earned  <a href="{{ match_link region mostGold.id accou
 {{ parallax_end "/img/smoke.jpg" }}
 
 {{ section_start "When do you play?" }}
-<p class="text-lighten-4 center small">(I'm sorry, but all of this is UTC. Convert to your timezone!)</p>
-<p class="text-lighten-4 center small">(missing data not being displayed)</p>
+<p class="text-lighten-4 center small">(data converted to your browser timezone, missing data not displayed)</p>
 {{ graph "line" "Hour (UTC, translate to your timezone!)" "hour" "count" "games" gamesByHour }}
 {{ graph "line" "Day of Week" "dow" "count" "games" gamesByDayOfWeek }}
 {{ section_end }}

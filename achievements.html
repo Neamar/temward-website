@@ -258,6 +258,15 @@ if(!summoner || !region) {
 }
 else {
   callAjax(`https://api.teamward.xyz/achievements?summoner=${summoner}&region=${region}`, function(res) {
+    // Convert timezone data
+    var offset = -Math.round((new Date().getTimezoneOffset()) / 60);
+    res.gamesByHour.forEach(d => {
+      d.hour = (d.hour + offset + 24) % 24;
+    });
+    res.gamesByHour.sort(function(a, b) {
+      return a.hour - b.hour;
+    });
+
     var html = template(res);
     document.getElementById('content').innerHTML = html;
 

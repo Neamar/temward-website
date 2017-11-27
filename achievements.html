@@ -168,7 +168,7 @@ Handlebars.registerHelper('match_link', function(region, id, accountId) {
 });
 
 Handlebars.registerHelper('number', function(number) {
-  return number.toLocaleString();
+  return (number || 0).toLocaleString();
 });
 
 Handlebars.registerHelper('duration', function(duration) {
@@ -190,7 +190,7 @@ Handlebars.registerHelper('table', function(columns, data) {
   table += "</tr></thead><toby>";
   data.forEach(function(d) {
     table += "<tr>";
-    columns.forEach(c => table += `<td>${d[c]}${c==='winrate'?'%':''}</td>`);
+    columns.forEach(c => table += `<td>${d[c]}${c === 'winrate' ? '%' : ''}</td>`);
     table += "</tr>";
   });
   table += "</table>";
@@ -226,7 +226,7 @@ if(!summoner || !region) {
   document.getElementById("loader-wrapper").innerHTML = "Invalid URL";
 }
 else {
-  callAjax(`https://staging.teamward.xyz/achievements?summoner=${summoner}&region=${region}`, function(res) {
+  callAjax(`https://api.teamward.xyz/achievements?summoner=${summoner}&region=${region}`, function(res) {
     var html = template(res);
     document.getElementById('content').innerHTML = html;
 

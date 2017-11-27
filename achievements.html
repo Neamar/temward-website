@@ -94,7 +94,7 @@ function callAjax(url, callback) {
     </div>
   </div>
 
-  <div id="content">
+  <div id="form">
       <div class="container">
         <div class="section">
           <div class="row">
@@ -254,7 +254,7 @@ const summoner = urlParams.get('summoner');
 const region = urlParams.get('region');
 
 if(!summoner || !region) {
-  document.getElementById("loader-wrapper").innerHTML = "Invalid URL";
+  document.getElementById("loader-wrapper").innerHTML = "";
 }
 else {
   callAjax(`https://api.teamward.xyz/achievements?summoner=${summoner}&region=${region}`, function(res) {

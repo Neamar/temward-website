@@ -13,6 +13,7 @@
           <strong>Wait, is that all?</strong><br>
           <li>If you installed <a href="https://play.google.com/store/apps/details?id=fr.neamar.lolgamedata&hl=en" class="white-text">Teamward</a> before the start of the season, then the stats are exhaustive. GGWP.
           <li>If you didn't, then you'll only see games where you played with or against a Teamward user (around 75% of the games in EUW)
+          <li>keep in mind, it's only ranked!
         </div>
       </div>
     </div>
@@ -71,16 +72,16 @@ You destroyed a total of {{ inhibsAndTowersDestroyed.inhibitor_kills }} inhibito
 {{ section_end }}
 
 {{ parallax_start }}
-You had first blood in {{ first.first_blood }} games ({{first.first_blood_percent}}%),<br>
-first tower in {{ first.first_tower }} games ({{ first.first_tower_percent}}%)<br>
-and first inhibitor in {{ first.first_inhibitor }} of your games ({{ first.first_inhibitor_percent }}%).<br>
+You get first blood in {{first.first_blood_percent}}%,<br>
+first tower in {{ first.first_tower_percent}}%<br>
+and first inhibitor {{ first.first_inhibitor_percent }}%.<br>
 <small>Keep in mind, the average is 10%!</small>
 {{ parallax_end "/img/smoke.jpg" }}
 
 {{ section_start "How do you deal with your opponents?" }}
 <p class="center">"When I play against {{ bestWinrateAgainst.0.name}}; I win in {{ bestWinrateAgainst.0.winrate }}% of my games".</p>
+<p class="text-lighten-4 censter small">(you need to play against a champion at least 5 times for him to appear)</p>
 {{ graph "bar" "Nemesis" "name" "winrate" "% winrate" bestWinrateAgainst }}
-<p class="text-lighten-4 center small">(you need to play against a champion at least 5 times for him to appear)</p>
 {{ table "name,winrate" bestWinrateAgainst }}
 {{ section_end }}
 
@@ -130,8 +131,8 @@ You win your lane in {{ laneDomination.lane_won_percentage }}% of your games.
 
 {{ section_start "Are you a good laner?" }}
 <p class="text-lighten-4 center small">(played at least 5 times. "Lane won" is defined as having more gold than your opponent at 10')</p>
-{{ graph "bar" "Laning phase winrate" "name" "lane_won_percentage" "%" laneDominationByChampion }}
-{{ table "name,lane_won_percentage" laneDominationByChampion }}
+{{ graph "bar" "Laning phase winrate" "name" "winrate" "%" laneDominationByChampion }}
+{{ table "name,winrate" laneDominationByChampion }}
 {{ section_end }}
 
 {% endraw %}

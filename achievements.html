@@ -15,8 +15,11 @@ function callAjax(url, callback) {
   // compatible with IE7+, Firefox, Chrome, Opera, Safari
   xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
-    if(xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-      callback(JSON.parse(xmlhttp.responseText));
+    if(xmlhttp.readyState === 4) {
+      if(xmlhttp.status === 200) {
+        return callback(null, JSON.parse(xmlhttp.responseText));
+      }
+      return callback(new Error("Invalid status code; check your summoner name and region!"));
     }
   };
   xmlhttp.open("GET", url, true);
@@ -258,7 +261,11 @@ if(!summoner || !region) {
   document.getElementById("loader-wrapper").innerHTML = "";
 }
 else {
-  callAjax(`https://api.teamward.xyz/achievements?summoner=${summoner}&region=${region}`, function(res) {
+  callAjax(`https://api.teamward.xyz/achievements?summoner=${summoner}&region=${region}`, function(err, res) {
+    if(err) {
+      document.getElementById("loader-wrapper").innerHTML = "<h4>" + err.toString();
+      throw err;
+    }
     // Convert timezone data
     var offset = -Math.round((new Date().getTimezoneOffset()) / 60);
     res.gamesByHour.forEach(d => {

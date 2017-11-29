@@ -62,14 +62,16 @@ footer.page-footer {
   margin: 0;
 }
 
-table {
-  margin: auto;
-  width: auto;
-}
+@media only screen and (min-width : 990px) {
+  table {
+    margin: auto;
+    width: auto;
+  }
 
-table th, table td {
-  text-align: center;
-  min-width: 100px;
+  table th, table td {
+    text-align: center;
+    min-width: 100px;
+  }
 }
 
 .tw-blue {

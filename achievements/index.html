@@ -128,7 +128,6 @@ function callAjax(url, callback) {
     </div>
   </div>
 
-
   <footer class="page-footer tw-blue-bg">
     <div class="container">
       <div class="row">
@@ -276,6 +275,7 @@ else {
 
     var html = template(res);
     document.getElementById('content').innerHTML = html;
+    document.title = "S7 achievements for " + summoner;
 
     setTimeout(function() {
       graphLoader.forEach(f => f());
@@ -290,5 +290,6 @@ $(function() {
   $('.parallax').parallax();
 });
   </script>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a29a56e1e13b4e8"></script>
 </body>
 </html>

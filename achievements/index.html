@@ -256,39 +256,81 @@ const urlParams = new URLSearchParams(window.location.search.substr(1));
 const summoner = urlParams.get('summoner');
 const region = urlParams.get('region');
 
+function displayAchievements(err, res) {
+  if(err) {
+    document.getElementById("loader-wrapper").innerHTML = "<h4>" + err.toString();
+    throw err;
+  }
+  // Convert timezone data
+  var offset = -Math.round((new Date().getTimezoneOffset()) / 60);
+  res.gamesByHour.forEach(d => {
+    d.hour = (d.hour + offset + 24) % 24;
+  });
+  res.gamesByHour.sort(function(a, b) {
+    return a.hour - b.hour;
+  });
+
+  var html = template(res);
+  document.getElementById('content').innerHTML = html;
+  document.title = "S7 achievements for " + summoner;
+
+  setTimeout(function() {
+    graphLoader.forEach(f => f());
+    $('.parallax').parallax();
+  }, 10);
+
+  window.scrollTo(0, 0);
+
+  amplitude.getInstance().logEvent('S7 achievements', {region: region, summoner: summoner, gamesCount: res.totalGames.nb_games});
+}
+
 if(!summoner || !region) {
   document.getElementById("loader-wrapper").innerHTML = "";
 }
 else {
-  callAjax(`https://api.teamward.xyz/achievements?summoner=${summoner}&region=${region}`, function(err, res) {
-    if(err) {
-      document.getElementById("loader-wrapper").innerHTML = "<h4>" + err.toString();
-      throw err;
-    }
-    // Convert timezone data
-    var offset = -Math.round((new Date().getTimezoneOffset()) / 60);
-    res.gamesByHour.forEach(d => {
-      d.hour = (d.hour + offset + 24) % 24;
-    });
-    res.gamesByHour.sort(function(a, b) {
-      return a.hour - b.hour;
-    });
-
-    var html = template(res);
-    document.getElementById('content').innerHTML = html;
-    document.title = "S7 achievements for " + summoner;
-
-    setTimeout(function() {
-      graphLoader.forEach(f => f());
-      $('.parallax').parallax();
-    }, 10);
-
-    amplitude.getInstance().logEvent('S7 achievements', {region: region, summoner: summoner, gamesCount: res.totalGames.nb_games});
-  });
+  callAjax(`https://api.teamward.xyz/achievements?summoner=${summoner}&region=${region}`, displayAchievements);
 }
 
 $(function() {
   $('.parallax').parallax();
+
+  $('#request').click(function(e) {
+    e.preventDefault();
+    $('#request').hide();
+    $('#disclaimer').hide();
+    var loader = $('#download');
+    loader.show();
+    loader.html("Downloading your games...");
+
+    function onDone() {
+      loader.html("Games downloaded!");
+      callAjax(`https://api.teamward.xyz/achievements?nocache=1&summoner=${summoner}&region=${region}`, displayAchievements);
+      setTimeout(() => $('#request').hide(), 2000);
+    }
+
+    callAjax(`https://api.teamward.xyz/achievements/done?summoner=${summoner}&region=${region}`, function(err, res) {
+      if(res.done) {
+        onDone();
+        return;
+      }
+
+      callAjax(`https://api.teamward.xyz/achievements/enqueue?summoner=${summoner}&region=${region}`, function(err, res) {
+        var eta = Math.ceil(res.count / 100 / 60 + 2);
+        loader.html("In queue before you: " + res.count.toLocaleString() + " (ETA: " + eta + " min)<br>Page will reload automatically when ready.<br>In the meantime, you should definitely check out <a href='https://play.google.com/store/apps/details?id=fr.neamar.lolgamedata'>TeamWard</a>: it's free, ad-free and will definitely improve your League experience!");
+        function checkIfDone() {
+          callAjax(`https://api.teamward.xyz/achievements/done?summoner=${summoner}&region=${region}`, function(err, res) {
+            if(res.done) {
+              onDone();
+              return;
+            }
+
+            setTimeout(checkIfDone, 15000);
+          });
+        }
+        checkIfDone();
+      });
+    });
+  });
 });
   </script>
   <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a29a56e1e13b4e8"></script>

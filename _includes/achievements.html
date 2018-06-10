@@ -4,19 +4,15 @@
     <div class="row">
       <div class="col s12 center">
         <h3><i class="mdi-content-send brown-text"></i></h3>
-        <h4>You played {{ number totalGames.nb_games }} <strong>ranked</strong> games during last season, and won {{ number totalGames.nb_wins }} (winrate: {{ totalGames.winrate }}%).</h4>
+        <h4>You played {{ number totalGames.nb_games }} <strong>ranked</strong> games in the season, and won {{ number totalGames.nb_wins }} (winrate: {{ totalGames.winrate }}%).</h4>
         <div class="left-align light">
           {{ graph "percentage" "Games by queue" "queue" "count" "games" queuesRepartition }}
         </div>
 
         <div class="orange" id="teamward-message" style="margin: 30px; padding: 20px">
           <div id="disclaimer">
-            <strong>Wait, is that all?</strong><br>
-            <li>If you installed <a href="https://play.google.com/store/apps/details?id=fr.neamar.lolgamedata&hl=en" class="white-text">Teamward</a>, then the stats are exhaustive. GGWP.
-            <li>If you didn't, then you'll only see games where you played with or against a Teamward user (around 75% of the games in EUW)
-            <li>keep in mind, it's only ranked!
-          </div>
-          <br><a href="#" id="request" class="btn waves-effect waves-light orange lighten-2">Request all my games</a>
+            <strong>Feel some games are missing?</strong><br>
+            <br><a href="#" id="request" class="btn waves-effect waves-light red lighten-2">Request all my games</a>
           <p id="download" style="display: none"></p>
         </div>
 

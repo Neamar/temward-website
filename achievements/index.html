@@ -3,7 +3,7 @@
 
 <html>
 <head>
-  <title>Your S7 achievements</title>
+  <title>Season achievements</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
   <script src="https://unpkg.com/frappe-charts@0.0.7/dist/frappe-charts.min.iife.js"></script>
   <script>
@@ -77,7 +77,7 @@ function callAjax(url, callback) {
     <div class="section no-pad-bot">
       <div class="container">
         <br><br>
-        <h1 class="header center white-text text-lighten-2">Your League achievements for Season 7</h1>
+        <h1 class="header center white-text text-lighten-2">Your League achievements for Season <span class="season">8</span></h1>
         <div class="row center">
           <h5 class="header col s12 light">Let's look back at your ranked stats, shall we?<br>
             <small>(did you get a penta?)</small></h5>
@@ -127,6 +127,11 @@ function callAjax(url, callback) {
                   <option value="ru">RU</option>
                   <option value="jp">JP</option>
                 </select>
+                <select name="season" style="display: block">
+                  <option value="8" selected>Current season (8)</option>
+                  <option value="7">Last season (7)</option>
+                </select>
+
                 <p class="center"><input type="submit" value="View stats!" class="btn-large tw-blue-bg"/></p>
               </form>
             </div>
@@ -262,11 +267,17 @@ var template = Handlebars.compile(source);
 const urlParams = new URLSearchParams(window.location.search.substr(1));
 const summoner = urlParams.get('summoner');
 const region = urlParams.get('region');
+const season = urlParams.get('season');
+
+let host = 'https://api.teamward.xyz';
+host = 'https://staging.teamward.xyz';
+// host = 'http://localhost:3000';
 
 function onRequestClicked(e) {
   e.preventDefault();
   $('#request').hide();
   $('#disclaimer').hide();
+  $('.season').text(season);
   var loader = $('#download');
   loader.show();
   loader.html("Downloading your games...");
@@ -274,24 +285,24 @@ function onRequestClicked(e) {
   function onDone() {
     loader.html("Games downloaded!");
     $('#teamward-message').hide();
-    callAjax(`https://api.teamward.xyz/achievements?nocache=1&summoner=${summoner}&region=${region}`, displayAchievements);
+    callAjax(`${host}/achievements?nocache=1&summoner=${summoner}&region=${region}&season=${season}`, displayAchievements);
     setTimeout(() => $('#teamward-message').hide(), 500);
     setTimeout(() => $('#teamward-message').hide(), 1000);
     setTimeout(() => $('#teamward-message').hide(), 1500);
     setTimeout(() => $('#teamward-message').hide(), 2000);
   }
 
-  callAjax(`https://api.teamward.xyz/achievements/done?summoner=${summoner}&region=${region}`, function(err, res) {
+  callAjax(`${host}/achievements/done?summoner=${summoner}&region=${region}&season=${season}`, function(err, res) {
     if(res.done) {
       onDone();
       return;
     }
 
-    callAjax(`https://api.teamward.xyz/achievements/enqueue?summoner=${summoner}&region=${region}`, function(err, res) {
+    callAjax(`${host}/achievements/enqueue?summoner=${summoner}&region=${region}&season=${season}`, function(err, res) {
       var eta = Math.ceil(res.count / 100 / 60 + 2);
-      loader.html("In queue before you: " + res.count.toLocaleString() + " (ETA: " + eta + " min)<br>Page will reload automatically when ready.<br>In the meantime, you should definitely check out <a href='https://play.google.com/store/apps/details?id=fr.neamar.lolgamedata'>TeamWard</a>: it's free, ad-free and will definitely improve your League experience!");
+      loader.html("In queue before you: " + res.count.toLocaleString() + " (ETA: " + eta + " min)<br>Page will reload automatically when ready.<br>In the meantime, you should check out <a href='https://play.google.com/store/apps/details?id=fr.neamar.lolgamedata'>TeamWard</a>: it's free, ad-free and will definitely improve your League experience!");
       function checkIfDone() {
-        callAjax(`https://api.teamward.xyz/achievements/done?summoner=${summoner}&region=${region}`, function(err, res) {
+        callAjax(`${host}/achievements/done?summoner=${summoner}&region=${region}&season=${season}`, function(err, res) {
           if(res.done) {
             onDone();
             return;
@@ -330,7 +341,7 @@ function displayAchievements(err, res) {
 
   window.scrollTo(0, 0);
 
-  amplitude.getInstance().logEvent('S7 achievements', {region: region, summoner: summoner, gamesCount: res.totalGames.nb_games});
+  amplitude.getInstance().logEvent('S7 achievements', {region: region, summoner: summoner, season: season, gamesCount: res.totalGames.nb_games});
   $('#request').click(onRequestClicked);
 }
 
@@ -338,7 +349,7 @@ if(!summoner || !region) {
   document.getElementById("loader-wrapper").innerHTML = "";
 }
 else {
-  callAjax(`https://api.teamward.xyz/achievements?summoner=${summoner}&region=${region}`, displayAchievements);
+  callAjax(`${host}/achievements?summoner=${summoner}&region=${region}&season=${season}`, displayAchievements);
 }
 
 $(function() {

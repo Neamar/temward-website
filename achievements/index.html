@@ -332,7 +332,7 @@ function displayAchievements(err, res) {
 
   var html = template(res);
   document.getElementById('content').innerHTML = html;
-  document.title = "S7 achievements for " + summoner;
+  document.title = "Season achievements for " + summoner;
 
   setTimeout(function() {
     graphLoader.forEach(f => f());
